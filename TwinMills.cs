@@ -190,8 +190,8 @@ namespace Oxide.Plugins
                 if (victimEntity.creatorEntity.ToPlayer().currentTeam == hitInfo.Initiator.ToPlayer().currentTeam); return;
             }
 
-            // Is the victim a player? If so, we will fire off the "EntityDestroyed" webhook. Otherwise, we'll fire off the "PlayerKill" webhook.
-            if (victimEntity is Player)
+            // Is the victim NOT a player? If so, we will fire off the "EntityDestroyed" webhook. Otherwise, we'll fire off the "PlayerKill" webhook.
+            if (!victimEntity is Player)
             {
                 if (!config.EntityDestroyedWebHookURL)
                 {
