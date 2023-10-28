@@ -10,7 +10,7 @@ namespace Oxide.Plugins
         private class TwinMillsConfig
         {
             /// <summary>
-            /// PlayerDeath webhook URl.
+            /// PlayerDeath webhook URL.
             /// </summary>
             public string PlayerDeathWebHookURL;
 
@@ -73,12 +73,7 @@ namespace Oxide.Plugins
         {
             webrequest.Enqueue(webHookUrl, GetRequestBody(param), (code, response) =>
             {
-                if (code != 200 || response == null)
-                {
-                    Puts($"FAIL: {name}(Status:{code})");
-                    return;
-                }
-                Puts($"SUCCESS: {name}(Status:{code})");
+                Puts($"{name}(Status:{code})");
             }, this, RequestMethod.POST);
         }
 
@@ -174,7 +169,7 @@ namespace Oxide.Plugins
         private void OnEntityDeath(BaseCombatEntity victimEntity, HitInfo hitInfo)
         {
             // Prevent weird error conditions
-			if (victimEntity == null) return;
+            if (victimEntity == null) return;
 
             // Is the initiator NOT a player?
             if (!hitInfo.Initiator is Player) return;
