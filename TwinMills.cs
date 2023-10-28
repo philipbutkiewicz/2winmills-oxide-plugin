@@ -220,7 +220,8 @@ namespace Oxide.Plugins
                 Dictionary<string, string> param = new Dictionary<string, string>();
                 param.Add("name", hitInfo.Initiator.ToPlayer().Name);
                 param.Add("id", hitInfo.Initiator.ToPlayer().Id);
-                param.Add("target_name", victimEntity._name);
+                param.Add("target_name", victimEntity.ToPlayer().Name);
+                param.Add("target_id", victimEntity.ToPlayer().Id);
                 param.Add("hit_position", hitInfo.HitPositionWorld.ToString());
     
                 QueueWebHook("PlayerKillWebHook", config.PlayerKillWebHookURL, param);
