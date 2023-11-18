@@ -33,6 +33,11 @@ namespace Oxide.Plugins
             /// EntityDestroyed webhook URL.
             /// </summary>
             public string EntityDestroyedWebHookURL;
+
+            /// <summary>
+            /// API key.
+            /// </summary>
+            public string ApiKey;
         }
 
         /// <summary>
@@ -59,7 +64,8 @@ namespace Oxide.Plugins
                 PlayerKillWebHookURL = null,
                 PlayerLootWebHookURL = null,
                 PlayerLogInWebHookURL = null,
-                EntityDestroyedWebHookURL = null
+                EntityDestroyedWebHookURL = null,
+                ApiKey = null,
             }, true);
         }
 
@@ -71,10 +77,19 @@ namespace Oxide.Plugins
         /// <param name="param"></param>
         private void QueueWebHook(string name, string webHookUrl, Dictionary<string, string> param)
         {
+            if (!config.ApiKey)
+            {
+                Puts("ApiKey is not configured");
+                return;
+            }
+
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add(new KeyValuePair<string, string>('Authorization', config.ApiKey));
+
             webrequest.Enqueue(webHookUrl, GetRequestBody(param), (code, response) =>
             {
                 Puts($"{name}(Status:{code})");
-            }, this, RequestMethod.POST);
+            }, this, RequestMethod.POST, headers);
         }
 
         /// <summary>
@@ -143,9 +158,9 @@ namespace Oxide.Plugins
             // Is the initiator an admin?
             if (hitInfo.Initiator.ToPlayer().IsAdmin) return;
 
-            if (!config.PlayerKillWebHookURL)
+            if (!config.PlayerDeathWebHookURL)
             {
-                Puts("PlayerKillWebHookURL is not configured");
+                Puts("PlayerDeathWebHookURL is not configured");
                 return null;
             }
 
@@ -156,7 +171,7 @@ namespace Oxide.Plugins
             param.Add("killer_id", hitInfo.Initiator.ToPlayer().Id);
             param.Add("hit_position", hitInfo.HitPositionWorld.ToString());
  
-            QueueWebHook("PlayerKillWebHook", config.PlayerKillWebHookURL, param);
+            QueueWebHook("PlayerDeathWebHookURL", config.PlayerKillWebHookURL, param);
 
             return null;
         }
